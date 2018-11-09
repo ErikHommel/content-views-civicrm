@@ -68,7 +68,7 @@ class Content_Views_CiviCRM_Query {
 	 * @return array $args WP_Query parameters
 	 */
 	public function filter_query_params( $args ) {
-		if ( $args['post_type'] == 'civicrm_contact' )
+		//if ( $args['post_type'] == 'civicrm_contact' )
 			// bypass query
 			$this->bypass_query( $args );
 		return $args;
@@ -100,19 +100,32 @@ class Content_Views_CiviCRM_Query {
 			// 	->setLimit( 100 )
 			// 	->execute();
 
-			$contacts = \Civi\Api4\Contact::get()
+			/*$contacts = \Civi\Api4\Contact::get()
 				->addClause( 'OR', 
 					[ 'contact_type', 'IN', $args['contact_type'] ],
 					[ 'contact_sub_type', 'IN', $args['contact_type'] ]
 				)
 				->setLimit( $args['limit'] )
-				->execute();
+				->execute();*/
 
+      $api = new civicrm_api3 (array (
+        'server' => cf7_civi_settings::getHost(),
+        'api_key'=> cf7_civi_settings::getApiKey(),
+        'key'=> cf7_civi_settings::getSiteKey(),
+        'path' => cf7_civi_settings::getPath(),
+      ));
+      $result = $api->call('Contact', 'get', array(
+        'return[]' => 'id',
+        'return[]' => 'sort_name',
+        'is_deleted' => 0,
+        'contact_type' => 'Individual',
+      ));
+      $contacts = $api->values();
 			// mock WP_Posts contacts
 			foreach ( $contacts as $contact ) {
 				$post = new WP_Post( (object) [] );
-				$post->ID = $contact['id'];
-				$post->post_title = $contact['sort_name'];
+				$post->ID = $contact->id;
+				$post->post_title = $contact->sort_name;
 				$post->post_type = 'civicrm_contact';
 				$post->filter = 'raw'; // set to raw to bypass sanitization
 
@@ -126,6 +139,7 @@ class Content_Views_CiviCRM_Query {
 					if ( ! in_array( $field, [ 'hash' ] ) )
 						$post->$field = $value;
 				}
+        $post->post_title = $contact->sort_name;
 
 				// build array
 				$posts[] = $post;

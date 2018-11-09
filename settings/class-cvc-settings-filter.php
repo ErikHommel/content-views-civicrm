@@ -132,11 +132,9 @@ class Content_Views_CiviCRM_Settings_Filter {
 	 * @return array $types Contact types
 	 */
 	public function contact_type_options() {
-		$contact_types_result = \Civi\Api4\ContactType::get()
-			->addWhere( 'is_active', '=', 1 )
-			// ->addWhere( 'parent_id', 'IS NULL' )
-			->setLimit( 0 )
-  			->execute();
+		$contact_types_result = array();
+		  //'individual' => array('title' => 'Individual'),
+    //);
 
 		$types = array_reduce( ( array ) $contact_types_result, function( $types, $type ) {
 			$types[$type['name']] = $type['name'];
@@ -152,11 +150,9 @@ class Content_Views_CiviCRM_Settings_Filter {
 	 * @return array $types Contact types
 	 */
 	public function contact_sub_type_options() {
-		$contact_types_result = \Civi\Api4\ContactType::get()
-			->addWhere( 'is_active', '=', 1 )
-			->addWhere( 'parent_id', 'IS NOT NULL' )
-			->setLimit( 0 )
-  			->execute();
+		$contact_types_result =  array();
+		  //'student' => array('title' => 'Student'),
+    //);
 
 		$types = array_reduce( ( array ) $contact_types_result, function( $types, $type ) {
 			$types[$type['name']] = $type['name'];
@@ -172,10 +168,9 @@ class Content_Views_CiviCRM_Settings_Filter {
 	 * @return array $types Groups
 	 */
 	public function group_options() {
-		$groups_result = \Civi\Api4\Group::get()
-			->addWhere( 'is_active', '=', 1 )
-			->setLimit( 0 )
-  			->execute();
+		$groups_result =  array();
+		  //1 => array('id' => 1, 'title' => 'group'),
+    //);
 
 		$groups = array_reduce( ( array ) $groups_result, function( $groups, $group ) {
 			$groups[$group['id']] = $group['name'];

@@ -62,9 +62,8 @@ class Content_Views_CiviCRM_Settings_Display {
 	 * @return string $html
 	 */
 	public function contact_fields_html( $html, $field_name, $post ) {
-
-		if ( $post->post_type == 'civicrm_contact' )
-			return $html = '<div class="col-md-12 pt-cv-ctf-column"><div class="pt-cv-custom-fields pt-cv-ctf-post_field_1"><div class="pt-cv-ctf-value">' . $post->$field_name . '</div></div></div>';
+		if ( $post->post_type == 'civicrm_contact'  && $field_name == 'id')
+			return $html = '<div class="col-md-12 pt-cv-ctf-column"><div class="pt-cv-custom-fields pt-cv-ctf-post_field_1"><div class="pt-cv-ctf-value">' . $post->sort_name . '</div></div></div>';
 
 		return $html;
 	}
@@ -186,7 +185,11 @@ class Content_Views_CiviCRM_Settings_Display {
 	 */
 	public function get_contact_fields_options() {
 		
-		$fields = \Civi\Api4\Contact::getFields()->execute();
+		//$fields = \Civi\Api4\Contact::getFields()->execute();
+    $fields = array(
+      array('name' => 'id', 'title' => 'id'),
+      array('name' => 'sort_id', 'title' => 'sort_name'),
+    );
 
 		return array_reduce( ( array ) $fields, function( $fields, $field ) {
 
